@@ -3,8 +3,8 @@ Oswaldo Bayona
 Jorge Vergara
 
 Comandos JAVA:
-
-1. Compilacion: ./gradlew build
-2. Generar ejecutables: ./gradlew installDist
-3. Ejecutar el servidor Java: ./build/install/Proyecto_Sistemas_Distribuidos/bin/cache-service-server
-4. Ejecutar el Cliente Java: ./build/install/Proyecto_Sistemas_Distribuidos/bin/cache-service-client
+1. Generar archivos gradlew: gradle wrapper --gradle-version 2.13
+2. Compilacion: ./gradlew build
+3. Generar ejecutables: ./gradlew installDist
+4. Ejecutar el servidor Java: ./build/install/Proyecto_Sistemas_Distribuidos/bin/cache-service-server
+5. Ejecutar el Cliente Java: ./build/install/Proyecto_Sistemas_Distribuidos/bin/cache-service-client
