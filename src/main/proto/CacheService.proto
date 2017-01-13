@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package cacheService;
+
+option java_multiple_files = true;
+option java_package = "cacheService";
+option java_outer_classname = "CacheServiceProto";
+
+// The greeting service definition.
+service CacheService {
+  // Probabilistic adaptive search
+  rpc probabilisticAdactiveSearch (DataCacheRequest) returns (PartitionCacheResponse) {}
+}
+message UtilityFunctionPoint{
+  float m=1;
+  float hit=2;
+}
+
+message UtilityFunction{
+	repeated UtilityFunctionPoint point=1;
+}
+
+// The request message containing 
+message DataCacheRequest {
+  float M = 1;
+  repeated float W=2;
+  repeated float m_min=3;
+  repeated UtilityFunction U=4;
+}
+
+// The response message containing 
+message PartitionCacheResponse {
+   repeated float m=1;
+}
