@@ -1,3 +1,10 @@
 Integrantes:
 Oswaldo Bayona
 Jorge Vergara
+
+Comandos JAVA:
+
+1. Compilacion: ./gradlew build
+2. Generar ejecutables: ./gradlew installDist
+3. Ejecutar el servidor Java: ./build/install/Proyecto_Sistemas_Distribuidos/bin/cache-service-server
+4. Ejecutar el Cliente Java: ./build/install/Proyecto_Sistemas_Distribuidos/bin/cache-service-client
