@@ -57,7 +57,7 @@ public class CacheServiceServer {
 
         @Override
         public void probabilisticAdactiveSearch(DataCacheRequest request, StreamObserver<PartitionCacheResponse> responseObserver) {
-            PartitionCacheResponse response = PartitionCacheResponse.newBuilder().addM((float)1.5).addM((float)2.3).build();
+            PartitionCacheResponse response = PartitionCacheResponse.newBuilder().addM(new Float(1.5)).addM(new Float(2.3)).build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }

@@ -7,6 +7,8 @@ import io.grpc.ManagedChannelBuilder;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.List;
+import java.util.Iterator;
 
 public class CacheServiceClient {
     private static final Logger logger = Logger.getLogger(CacheServiceClient.class.getName());
@@ -25,12 +27,20 @@ public class CacheServiceClient {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
 
-    public void probabilisticAdactiveSearch(float m) {
-        logger.info("Trying probabilisticAdactiveSearch: " + m);
+    public void probabilisticAdactiveSearch(DataCacheRequest request) {
+        logger.info("Trying probabilisticAdactiveSearch");
         try {
-            DataCacheRequest request = DataCacheRequest.newBuilder().setM(m).build();
             PartitionCacheResponse response = blockingStub.probabilisticAdactiveSearch(request);
-            logger.info("Respondio el Servidor: ");
+            System.out.println("Reponse to Server: ");
+
+            List<Float> mValues=response.getMList();
+            Iterator<Float> iterator = mValues.iterator();
+            int i=1;
+            while(iterator.hasNext()){
+                System.out.println("m"+i+": "+iterator.next());
+                i++;
+            }
+
         } catch (RuntimeException e) {
             logger.log(Level.WARNING, "Request to grpc server failed", e);
         }
@@ -41,7 +51,7 @@ public class CacheServiceClient {
         CacheServiceClient client = new CacheServiceClient("localhost", 42420);
 
         try {
-            client.probabilisticAdactiveSearch((float)50.5);
+            client.probabilisticAdactiveSearch(DataCacheRequest.newBuilder().setM((float)50.5).build());
         } finally {
             client.shutdown();
         }
