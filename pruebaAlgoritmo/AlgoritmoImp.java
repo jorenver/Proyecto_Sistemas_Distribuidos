@@ -83,7 +83,7 @@ public class AlgoritmoImp{
 		alpha= new double[n];
 		//inicializo el alpha
 		for (int i=0;i<alpha.length ;i++) {
-			alpha[i]=n;
+			alpha[i]=1.0/n;
 		}
 		dirichlet = new DirichletGen(new MRG32k3aL(),alpha);
 		//Genero la primeras K soluciones
