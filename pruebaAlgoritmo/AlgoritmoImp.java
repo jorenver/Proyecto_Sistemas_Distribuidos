@@ -3,6 +3,16 @@ import umontreal.ssj.rng.*;
 import umontreal.ssj.rng.MRG32k3aL;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Arrays;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
+
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import org.apache.commons.math3.analysis.UnivariateFunction;
+
+import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
+
+
 
 class UtilityFunctionPoint{
 	private double hit;
@@ -38,19 +48,65 @@ class UtilityFunction{
 		function.add(new UtilityFunctionPoint(m,hit));
 	}
 
-	int size(){
+	public int size(){
 		return function.size();
 	}
 
-	UtilityFunctionPoint get(int index){
+	public UtilityFunctionPoint get(int index){
 		return function.get(index);
 	}
 }
 
+//objeto solucion
+//contiene el conjunto de X
+//y el resultado de evaluar F(m)
+class Solution{
+	private double[] xs;
+	private double result;
+
+	public Solution(double[] xs, double result){
+		this.xs = xs;
+		this.result = result;
+	} 
+	public double[] getXs(){
+		return xs;
+	}
+	public double getResult(){
+		return result;
+	}
+}
+
+
 public class AlgoritmoImp{
 
-	private double calculateFunction(ArrayList<UtilityFunction> functions, double [] ms){
-		return 1.0;
+	private double[]  Denormalize(double[] x , double[] ms_ , double M){
+		int tam = x.length;
+		double [] ms = new double[tam];
+		for (int i =0; i< tam; i++){
+			ms[i] = x[i]*M + ms_[i];
+		}
+		return ms;
+	}
+
+
+	private double calculateFunction(ArrayList<UnivariateFunction> functions, double [] ms, double []weights){
+		double result=0;
+		
+		int numFunctions = functions.size();
+		for (int i=0; i< numFunctions; i++){
+			double cd, bd, f;
+			cd = 1.2;
+			bd = 3.4;
+			f = 30;
+			UnivariateFunction h = functions.get(i);
+			double h_i = h.value(ms[i]);
+			double EAT = h_i*cd + (1.0- h_i)*bd;
+			double Ui = -1*f*EAT;
+			result += weights[i]*Ui; // Wi*Ui(mi)
+		}
+
+		return result;
+
 	}
 
 	private int getMinSolution(double[][] solutions,int n){
@@ -73,34 +129,77 @@ public class AlgoritmoImp{
 		return index;
 	}
 
-	public double [] probabilisticAdactiveSearch(int k, int j,ArrayList<UtilityFunction> functions, int limit){
+	private ArrayList<UnivariateFunction> createHitRateCurves(ArrayList<UtilityFunction> functions){
+		int numFunctions = functions.size();
+
+		ArrayList<UnivariateFunction> hitRateCurves = new ArrayList<UnivariateFunction>(numFunctions);
+		for (UtilityFunction f : functions){
+			SplineInterpolator interpolator = new SplineInterpolator();
+			int numPoints = f.size();
+			double x[] = new double[numPoints]; 
+			double y[] = new double[numPoints];
+			for(int i =0; i< numPoints; i++){
+				UtilityFunctionPoint point = f.get(i);
+				x[i] = point.getM();
+				y[i] = point.getHit();
+			}
+			hitRateCurves.add(interpolator.interpolate(x,y));
+		}
+		return hitRateCurves; 
+	}
+
+	private  double[] generateAlphas(double[] x){
+		int tam = x.length;
+		double[][] covariances = new double[tam][tam];
+		for(int i = 0; i<tam; i++){
+			for(int j = 0; j<tam; j++){
+				if(i==j){
+					covariances[i][j] = 1.0;
+				}else{
+					covariances[i][j] = 0.0;
+				}
+			}
+		}
+		System.out.println(Arrays.toString(covariances));
+		MultivariateNormalDistribution gaussianaMult = new MultivariateNormalDistribution(x, covariances);
+		double[] alphas = gaussianaMult.sample();
+		return alphas;
+	}
+
+	public double [] probabilisticAdactiveSearch(int k, int j, ArrayList<UtilityFunction> functions, double[] weights, 
+		int limit){
 		double[][] solutions; 
 		double[] alpha; 
 		int n;
 		DirichletGen dirichlet;
+		ArrayList<UnivariateFunction> hitRateCurves = createHitRateCurves(functions);
+
 		n=functions.size();
-		solutions= new double[k][n+1]; // la posicion n guarda el varlor de evaluar la funcion de utilidad
+		solutions= new double[k][n+1]; // la posicion n guarda el valor de evaluar la funcion de utilidad
 		alpha= new double[n];
 		//inicializo el alpha
 		for (int i=0;i<alpha.length ;i++) {
-			alpha[i]=n;
+			alpha[i] = 1.0/n;
 		}
 		dirichlet = new DirichletGen(new MRG32k3aL(),alpha);
 		//Genero la primeras K soluciones
+		
+
 		for (int i=0;i<solutions.length ;i++) {
 			dirichlet.nextPoint(solutions[i]);
-			solutions[i][n]=calculateFunction(functions,solutions[i]);
+			solutions[i][n]=calculateFunction(hitRateCurves,solutions[i],weights);
 		}
 		int count=0;
 		while(count < limit){
 			// Generamos un alpha apartir de las soluciones anteriores
-			//alpha=
+			//alpha = generateAlphas(solutions);
+
 			dirichlet = new DirichletGen(new MRG32k3aL(),alpha);
 			for (int i=0;i<j ;i++) {
 				// genero una solucion x con el alpha
 				double [] x = new double[n+1];
 				dirichlet.nextPoint(x);
-				x[n]=calculateFunction(functions,x); //calculamos el valor de la funcion con la solucion generada
+				x[n]=calculateFunction(hitRateCurves,x,weights); //calculamos el valor de la funcion con la solucion generada
 				int index=getMinSolution(solutions,n); // encontramos menos buena
 				 //si la solucion generada es mejor que la peor guardada la remplazamos
 				if(x[n]>solutions[index][n]){
@@ -115,19 +214,22 @@ public class AlgoritmoImp{
 	}
 
 	public static void main(String[] args) {
+		double []weights = {1.0,1.0,1.0};
 		ArrayList<UtilityFunction> functions = new ArrayList<UtilityFunction>();
 		UtilityFunction f1 = new UtilityFunction();
+		f1.addPoint(0,0.0);
 		f1.addPoint(1,0.5);
 		f1.addPoint(2,0.7);
-		f1.addPoint(3,0.9);
+		f1.addPoint(3,0.99);
 		functions.add(f1);
 		UtilityFunction f2 = new UtilityFunction();
-		f1.addPoint(1,0.5);
-		f1.addPoint(2,0.7);
-		f1.addPoint(3,0.9);
+		f2.addPoint(0,0.0);
+		f2.addPoint(1,0.5);
+		f2.addPoint(2,0.7);
+		f2.addPoint(3,0.99);
 		functions.add(f2);
 		AlgoritmoImp al = new AlgoritmoImp();
-		double[] result=al.probabilisticAdactiveSearch(3,5,functions,4);
+		double[] result=al.probabilisticAdactiveSearch(3,5,functions,weights,4);
 		for (int i=0;i< result.length; i++ ) {
 			System.out.println(result[i]);
 		}
