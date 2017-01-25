@@ -79,6 +79,12 @@ class Solution{
 
 public class AlgoritmoImp{
 
+
+
+
+	/*
+	Calcula los m dado los x, efectua: mi = xi*M + mi_
+	*/
 	private double[]  Denormalize(double[] x , double[] ms_ , double M){
 		int tam = x.length;
 		double [] ms = new double[tam];
@@ -88,7 +94,13 @@ public class AlgoritmoImp{
 		return ms;
 	}
 
-
+	/*
+	Calcula F(x) = Sum(wi*Ui(mi))
+	donde:
+	wi es un peso
+	Ui es la funcion de utilidad = -fi*EAT(mi)
+	EAT(mi) = hi(mi)*cdi + (1-h(mi))*bdi
+	*/
 	private double calculateFunction(ArrayList<UnivariateFunction> functions, double [] ms, double []weights){
 		double result=0;
 		
@@ -109,26 +121,30 @@ public class AlgoritmoImp{
 
 	}
 
-	private int getMinSolution(double[][] solutions,int n){
-		int index=0;
-		for (int i=0;i < solutions.length ;i++ ) {
-			if(solutions[i][n]<solutions[index][n]){
+	private int getMinSolution(Solution[] solutions){
+		int index=0, n = solutions.length;
+		for (int i=0; i < n ;i++ ) {
+			if(solutions[i].getResult() < solutions[index].getResult()){
 				index=i;
 			}
 		}
 		return index;
 	}
 
-	private int getMaxSolution(double[][] solutions, int n){
-		int index=0;
-		for (int i=0;i < solutions.length ;i++ ) {
-			if(solutions[i][n]>solutions[index][n]){
+	private int getMaxSolution(Solution[] solutions){
+		int index=0, n = solutions.length;
+		for (int i=0;i < n ;i++ ) {
+			if(solutions[i].getResult()>solutions[index].getResult()){
 				index=i;
 			}
 		}
 		return index;
 	}
 
+
+	/*
+	Retorna los hit rates
+	*/
 	private ArrayList<UnivariateFunction> createHitRateCurves(ArrayList<UtilityFunction> functions){
 		int numFunctions = functions.size();
 
@@ -148,8 +164,20 @@ public class AlgoritmoImp{
 		return hitRateCurves; 
 	}
 
-	private  double[] generateAlphas(double[] x){
-		int tam = x.length;
+
+	/*
+	Genera los nuevos alpha muestreando una distribucion gaussianda
+	multivariada con media X
+	*/
+	private  double[] generateAlphas(Solution[] solutions){
+		
+		//de todas las soluciones se escoge una de forma aleatoria
+		int numSolutions = solutions.length;
+		int randomIndex = (int)(Math.random()*numSolutions);
+		double[] xs = solutions[randomIndex].getXs();
+		int tam = xs.length;
+
+		//se genera una matriz identidad de nxn
 		double[][] covariances = new double[tam][tam];
 		for(int i = 0; i<tam; i++){
 			for(int j = 0; j<tam; j++){
@@ -161,21 +189,23 @@ public class AlgoritmoImp{
 			}
 		}
 		System.out.println(Arrays.toString(covariances));
-		MultivariateNormalDistribution gaussianaMult = new MultivariateNormalDistribution(x, covariances);
+		MultivariateNormalDistribution gaussianaMult = new MultivariateNormalDistribution(xs, covariances);
 		double[] alphas = gaussianaMult.sample();
 		return alphas;
 	}
 
+
+
 	public double [] probabilisticAdactiveSearch(int k, int j, ArrayList<UtilityFunction> functions, double[] weights, 
-		int limit){
-		double[][] solutions; 
+		int limit, double M, double[] m_){
+		Solution[] solutions; 
 		double[] alpha; 
 		int n;
 		DirichletGen dirichlet;
 		ArrayList<UnivariateFunction> hitRateCurves = createHitRateCurves(functions);
 
 		n=functions.size();
-		solutions= new double[k][n+1]; // la posicion n guarda el valor de evaluar la funcion de utilidad
+		solutions= new Solution[k];
 		alpha= new double[n];
 		//inicializo el alpha
 		for (int i=0;i<alpha.length ;i++) {
@@ -186,50 +216,59 @@ public class AlgoritmoImp{
 		
 
 		for (int i=0;i<solutions.length ;i++) {
-			dirichlet.nextPoint(solutions[i]);
-			solutions[i][n]=calculateFunction(hitRateCurves,solutions[i],weights);
+			double []xs = new double[n];
+			dirichlet.nextPoint(xs);
+			double []ms = Denormalize(xs, m_ , M);
+			double result = calculateFunction(hitRateCurves,ms,weights);
+			solutions[i] = new Solution(xs, result);
 		}
 		int count=0;
 		while(count < limit){
 			// Generamos un alpha apartir de las soluciones anteriores
-			//alpha = generateAlphas(solutions);
+			alpha = generateAlphas(solutions);
 
 			dirichlet = new DirichletGen(new MRG32k3aL(),alpha);
 			for (int i=0;i<j ;i++) {
 				// genero una solucion x con el alpha
-				double [] x = new double[n+1];
-				dirichlet.nextPoint(x);
-				x[n]=calculateFunction(hitRateCurves,x,weights); //calculamos el valor de la funcion con la solucion generada
-				int index=getMinSolution(solutions,n); // encontramos menos buena
+				double [] xs = new double[n];
+				dirichlet.nextPoint(xs);
+				double []ms = Denormalize(xs, m_ , M);
+				double result =calculateFunction(hitRateCurves,ms,weights); //calculamos el valor de la funcion con la solucion generada
+				
+				int index=getMinSolution(solutions); // encontramos menos buena
 				 //si la solucion generada es mejor que la peor guardada la remplazamos
-				if(x[n]>solutions[index][n]){
-					solutions[index]=x;
+				if(result>solutions[index].getResult()){
+					solutions[index] = new Solution(xs, result);
 				}
 			}
 			count++;
 		}
-		int max=getMaxSolution(solutions,n);
-		return solutions[max];
+		int max=getMaxSolution(solutions);
+		return solutions[max].getXs();
 
 	}
 
 	public static void main(String[] args) {
-		double []weights = {1.0,1.0,1.0};
+		double []weights = {1.0,1.0};
+		double M = 30.0;
+		double [] m_ = {10.0, 5.0, 6.0};
 		ArrayList<UtilityFunction> functions = new ArrayList<UtilityFunction>();
 		UtilityFunction f1 = new UtilityFunction();
 		f1.addPoint(0,0.0);
-		f1.addPoint(1,0.5);
-		f1.addPoint(2,0.7);
-		f1.addPoint(3,0.99);
+		f1.addPoint(10,0.5);
+		f1.addPoint(20,0.7);
+		f1.addPoint(30,0.98);
+		f1.addPoint(40,0.99);
 		functions.add(f1);
 		UtilityFunction f2 = new UtilityFunction();
 		f2.addPoint(0,0.0);
-		f2.addPoint(1,0.5);
-		f2.addPoint(2,0.7);
-		f2.addPoint(3,0.99);
+		f2.addPoint(10,0.5);
+		f2.addPoint(20,0.7);
+		f2.addPoint(30,0.97);
+		f2.addPoint(40,0.99);
 		functions.add(f2);
 		AlgoritmoImp al = new AlgoritmoImp();
-		double[] result=al.probabilisticAdactiveSearch(3,5,functions,weights,4);
+		double[] result=al.probabilisticAdactiveSearch(3,5,functions,weights,4, M, m_);
 		for (int i=0;i< result.length; i++ ) {
 			System.out.println(result[i]);
 		}
