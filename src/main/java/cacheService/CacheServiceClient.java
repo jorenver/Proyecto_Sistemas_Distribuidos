@@ -27,10 +27,10 @@ public class CacheServiceClient {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
 
-    public void probabilisticAdactiveSearch(DataCacheRequest request) {
-        logger.info("Trying probabilisticAdactiveSearch");
+    public void probabilisticAdaptiveSearch(DataCacheRequest request) {
+        logger.info("Trying probabilisticAdaptiveSearch");
         try {
-            PartitionCacheResponse response = blockingStub.probabilisticAdactiveSearch(request);
+            PartitionCacheResponse response = blockingStub.probabilisticAdaptiveSearch(request);
             System.out.println("Reponse to Server: ");
 
             List<Float> mValues=response.getMList();
@@ -51,7 +51,7 @@ public class CacheServiceClient {
         CacheServiceClient client = new CacheServiceClient("localhost", 42420);
 
         try {
-            client.probabilisticAdactiveSearch(DataCacheRequest.newBuilder().setM((float)50.5).build());
+            client.probabilisticAdaptiveSearch(DataCacheRequest.newBuilder().setM((float)50.5).build());
         } finally {
             client.shutdown();
         }

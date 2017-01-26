@@ -46,15 +46,16 @@ public final class CacheServiceProto {
       "\n\022CacheService.proto\022\014cacheService\".\n\024Ut" +
       "ilityFunctionPoint\022\t\n\001m\030\001 \001(\002\022\013\n\003hit\030\002 \001" +
       "(\002\"D\n\017UtilityFunction\0221\n\005point\030\001 \003(\0132\".c" +
-      "acheService.UtilityFunctionPoint\"a\n\020Data" +
-      "CacheRequest\022\t\n\001M\030\001 \001(\002\022\t\n\001W\030\002 \003(\002\022\r\n\005m_" +
-      "min\030\003 \003(\002\022(\n\001U\030\004 \003(\0132\035.cacheService.Util" +
-      "ityFunction\"#\n\026PartitionCacheResponse\022\t\n" +
-      "\001m\030\001 \003(\0022u\n\014CacheService\022e\n\033probabilisti" +
-      "cAdactiveSearch\022\036.cacheService.DataCache" +
-      "Request\032$.cacheService.PartitionCacheRes",
-      "ponse\"\000B#\n\014cacheServiceB\021CacheServicePro" +
-      "toP\001b\006proto3"
+      "acheService.UtilityFunctionPoint\"\206\001\n\020Dat" +
+      "aCacheRequest\022\t\n\001M\030\001 \001(\002\022\t\n\001W\030\002 \003(\002\022\r\n\005m" +
+      "_min\030\003 \003(\002\022(\n\001U\030\004 \003(\0132\035.cacheService.Uti" +
+      "lityFunction\022\t\n\001f\030\005 \003(\005\022\013\n\003cdi\030\006 \001(\002\022\013\n\003" +
+      "bdi\030\007 \001(\002\"#\n\026PartitionCacheResponse\022\t\n\001m" +
+      "\030\001 \003(\0022u\n\014CacheService\022e\n\033probabilisticA" +
+      "daptiveSearch\022\036.cacheService.DataCacheRe",
+      "quest\032$.cacheService.PartitionCacheRespo" +
+      "nse\"\000B#\n\014cacheServiceB\021CacheServiceProto" +
+      "P\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -85,7 +86,7 @@ public final class CacheServiceProto {
     internal_static_cacheService_DataCacheRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_cacheService_DataCacheRequest_descriptor,
-        new java.lang.String[] { "M", "W", "MMin", "U", });
+        new java.lang.String[] { "M", "W", "MMin", "U", "F", "Cdi", "Bdi", });
     internal_static_cacheService_PartitionCacheResponse_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_cacheService_PartitionCacheResponse_fieldAccessorTable = new

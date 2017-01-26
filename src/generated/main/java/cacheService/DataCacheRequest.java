@@ -23,6 +23,9 @@ public  final class DataCacheRequest extends
     w_ = java.util.Collections.emptyList();
     mMin_ = java.util.Collections.emptyList();
     u_ = java.util.Collections.emptyList();
+    f_ = java.util.Collections.emptyList();
+    cdi_ = 0F;
+    bdi_ = 0F;
   }
 
   @java.lang.Override
@@ -106,6 +109,37 @@ public  final class DataCacheRequest extends
                 input.readMessage(cacheService.UtilityFunction.parser(), extensionRegistry));
             break;
           }
+          case 40: {
+            if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+              f_ = new java.util.ArrayList<java.lang.Integer>();
+              mutable_bitField0_ |= 0x00000010;
+            }
+            f_.add(input.readInt32());
+            break;
+          }
+          case 42: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            if (!((mutable_bitField0_ & 0x00000010) == 0x00000010) && input.getBytesUntilLimit() > 0) {
+              f_ = new java.util.ArrayList<java.lang.Integer>();
+              mutable_bitField0_ |= 0x00000010;
+            }
+            while (input.getBytesUntilLimit() > 0) {
+              f_.add(input.readInt32());
+            }
+            input.popLimit(limit);
+            break;
+          }
+          case 53: {
+
+            cdi_ = input.readFloat();
+            break;
+          }
+          case 61: {
+
+            bdi_ = input.readFloat();
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -122,6 +156,9 @@ public  final class DataCacheRequest extends
       }
       if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
         u_ = java.util.Collections.unmodifiableList(u_);
+      }
+      if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+        f_ = java.util.Collections.unmodifiableList(f_);
       }
       makeExtensionsImmutable();
     }
@@ -229,6 +266,47 @@ public  final class DataCacheRequest extends
     return u_.get(index);
   }
 
+  public static final int F_FIELD_NUMBER = 5;
+  private java.util.List<java.lang.Integer> f_;
+  /**
+   * <code>repeated int32 f = 5;</code>
+   */
+  public java.util.List<java.lang.Integer>
+      getFList() {
+    return f_;
+  }
+  /**
+   * <code>repeated int32 f = 5;</code>
+   */
+  public int getFCount() {
+    return f_.size();
+  }
+  /**
+   * <code>repeated int32 f = 5;</code>
+   */
+  public int getF(int index) {
+    return f_.get(index);
+  }
+  private int fMemoizedSerializedSize = -1;
+
+  public static final int CDI_FIELD_NUMBER = 6;
+  private float cdi_;
+  /**
+   * <code>optional float cdi = 6;</code>
+   */
+  public float getCdi() {
+    return cdi_;
+  }
+
+  public static final int BDI_FIELD_NUMBER = 7;
+  private float bdi_;
+  /**
+   * <code>optional float bdi = 7;</code>
+   */
+  public float getBdi() {
+    return bdi_;
+  }
+
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -261,6 +339,19 @@ public  final class DataCacheRequest extends
     }
     for (int i = 0; i < u_.size(); i++) {
       output.writeMessage(4, u_.get(i));
+    }
+    if (getFList().size() > 0) {
+      output.writeUInt32NoTag(42);
+      output.writeUInt32NoTag(fMemoizedSerializedSize);
+    }
+    for (int i = 0; i < f_.size(); i++) {
+      output.writeInt32NoTag(f_.get(i));
+    }
+    if (cdi_ != 0F) {
+      output.writeFloat(6, cdi_);
+    }
+    if (bdi_ != 0F) {
+      output.writeFloat(7, bdi_);
     }
   }
 
@@ -299,6 +390,28 @@ public  final class DataCacheRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, u_.get(i));
     }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < f_.size(); i++) {
+        dataSize += com.google.protobuf.CodedOutputStream
+          .computeInt32SizeNoTag(f_.get(i));
+      }
+      size += dataSize;
+      if (!getFList().isEmpty()) {
+        size += 1;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      fMemoizedSerializedSize = dataSize;
+    }
+    if (cdi_ != 0F) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeFloatSize(6, cdi_);
+    }
+    if (bdi_ != 0F) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeFloatSize(7, bdi_);
+    }
     memoizedSize = size;
     return size;
   }
@@ -325,6 +438,16 @@ public  final class DataCacheRequest extends
         .equals(other.getMMinList());
     result = result && getUList()
         .equals(other.getUList());
+    result = result && getFList()
+        .equals(other.getFList());
+    result = result && (
+        java.lang.Float.floatToIntBits(getCdi())
+        == java.lang.Float.floatToIntBits(
+            other.getCdi()));
+    result = result && (
+        java.lang.Float.floatToIntBits(getBdi())
+        == java.lang.Float.floatToIntBits(
+            other.getBdi()));
     return result;
   }
 
@@ -350,6 +473,16 @@ public  final class DataCacheRequest extends
       hash = (37 * hash) + U_FIELD_NUMBER;
       hash = (53 * hash) + getUList().hashCode();
     }
+    if (getFCount() > 0) {
+      hash = (37 * hash) + F_FIELD_NUMBER;
+      hash = (53 * hash) + getFList().hashCode();
+    }
+    hash = (37 * hash) + CDI_FIELD_NUMBER;
+    hash = (53 * hash) + java.lang.Float.floatToIntBits(
+        getCdi());
+    hash = (37 * hash) + BDI_FIELD_NUMBER;
+    hash = (53 * hash) + java.lang.Float.floatToIntBits(
+        getBdi());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -485,6 +618,12 @@ public  final class DataCacheRequest extends
       } else {
         uBuilder_.clear();
       }
+      f_ = java.util.Collections.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      cdi_ = 0F;
+
+      bdi_ = 0F;
+
       return this;
     }
 
@@ -529,6 +668,13 @@ public  final class DataCacheRequest extends
       } else {
         result.u_ = uBuilder_.build();
       }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        f_ = java.util.Collections.unmodifiableList(f_);
+        bitField0_ = (bitField0_ & ~0x00000010);
+      }
+      result.f_ = f_;
+      result.cdi_ = cdi_;
+      result.bdi_ = bdi_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -619,6 +765,22 @@ public  final class DataCacheRequest extends
             uBuilder_.addAllMessages(other.u_);
           }
         }
+      }
+      if (!other.f_.isEmpty()) {
+        if (f_.isEmpty()) {
+          f_ = other.f_;
+          bitField0_ = (bitField0_ & ~0x00000010);
+        } else {
+          ensureFIsMutable();
+          f_.addAll(other.f_);
+        }
+        onChanged();
+      }
+      if (other.getCdi() != 0F) {
+        setCdi(other.getCdi());
+      }
+      if (other.getBdi() != 0F) {
+        setBdi(other.getBdi());
       }
       onChanged();
       return this;
@@ -1043,6 +1205,124 @@ public  final class DataCacheRequest extends
         u_ = null;
       }
       return uBuilder_;
+    }
+
+    private java.util.List<java.lang.Integer> f_ = java.util.Collections.emptyList();
+    private void ensureFIsMutable() {
+      if (!((bitField0_ & 0x00000010) == 0x00000010)) {
+        f_ = new java.util.ArrayList<java.lang.Integer>(f_);
+        bitField0_ |= 0x00000010;
+       }
+    }
+    /**
+     * <code>repeated int32 f = 5;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getFList() {
+      return java.util.Collections.unmodifiableList(f_);
+    }
+    /**
+     * <code>repeated int32 f = 5;</code>
+     */
+    public int getFCount() {
+      return f_.size();
+    }
+    /**
+     * <code>repeated int32 f = 5;</code>
+     */
+    public int getF(int index) {
+      return f_.get(index);
+    }
+    /**
+     * <code>repeated int32 f = 5;</code>
+     */
+    public Builder setF(
+        int index, int value) {
+      ensureFIsMutable();
+      f_.set(index, value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 f = 5;</code>
+     */
+    public Builder addF(int value) {
+      ensureFIsMutable();
+      f_.add(value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 f = 5;</code>
+     */
+    public Builder addAllF(
+        java.lang.Iterable<? extends java.lang.Integer> values) {
+      ensureFIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, f_);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 f = 5;</code>
+     */
+    public Builder clearF() {
+      f_ = java.util.Collections.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      onChanged();
+      return this;
+    }
+
+    private float cdi_ ;
+    /**
+     * <code>optional float cdi = 6;</code>
+     */
+    public float getCdi() {
+      return cdi_;
+    }
+    /**
+     * <code>optional float cdi = 6;</code>
+     */
+    public Builder setCdi(float value) {
+      
+      cdi_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional float cdi = 6;</code>
+     */
+    public Builder clearCdi() {
+      
+      cdi_ = 0F;
+      onChanged();
+      return this;
+    }
+
+    private float bdi_ ;
+    /**
+     * <code>optional float bdi = 7;</code>
+     */
+    public float getBdi() {
+      return bdi_;
+    }
+    /**
+     * <code>optional float bdi = 7;</code>
+     */
+    public Builder setBdi(float value) {
+      
+      bdi_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional float bdi = 7;</code>
+     */
+    public Builder clearBdi() {
+      
+      bdi_ = 0F;
+      onChanged();
+      return this;
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {

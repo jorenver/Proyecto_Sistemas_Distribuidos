@@ -56,7 +56,7 @@ public class CacheServiceServer {
     private class CacheServiceImpl extends CacheServiceGrpc.CacheServiceImplBase {
 
         @Override
-        public void probabilisticAdactiveSearch(DataCacheRequest request, StreamObserver<PartitionCacheResponse> responseObserver) {
+        public void probabilisticAdaptiveSearch(DataCacheRequest request, StreamObserver<PartitionCacheResponse> responseObserver) {
             PartitionCacheResponse response = PartitionCacheResponse.newBuilder().addM(new Float(1.5)).addM(new Float(2.3)).build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();

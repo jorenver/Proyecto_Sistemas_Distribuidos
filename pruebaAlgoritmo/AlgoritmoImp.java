@@ -191,6 +191,9 @@ public class AlgoritmoImp{
 		System.out.println(Arrays.toString(covariances));
 		MultivariateNormalDistribution gaussianaMult = new MultivariateNormalDistribution(xs, covariances);
 		double[] alphas = gaussianaMult.sample();
+		for (int i=0;i<tam ;i++ ) {
+			alphas[i]=Math.abs(alphas[i]);
+		}
 		return alphas;
 	}
 

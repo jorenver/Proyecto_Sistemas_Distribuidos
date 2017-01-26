@@ -61,4 +61,27 @@ public interface DataCacheRequestOrBuilder extends
    */
   cacheService.UtilityFunctionOrBuilder getUOrBuilder(
       int index);
+
+  /**
+   * <code>repeated int32 f = 5;</code>
+   */
+  java.util.List<java.lang.Integer> getFList();
+  /**
+   * <code>repeated int32 f = 5;</code>
+   */
+  int getFCount();
+  /**
+   * <code>repeated int32 f = 5;</code>
+   */
+  int getF(int index);
+
+  /**
+   * <code>optional float cdi = 6;</code>
+   */
+  float getCdi();
+
+  /**
+   * <code>optional float bdi = 7;</code>
+   */
+  float getBdi();
 }

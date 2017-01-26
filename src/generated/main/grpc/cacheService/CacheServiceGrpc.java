@@ -32,11 +32,11 @@ public class CacheServiceGrpc {
   // Static method descriptors that strictly reflect the proto.
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<cacheService.DataCacheRequest,
-      cacheService.PartitionCacheResponse> METHOD_PROBABILISTIC_ADACTIVE_SEARCH =
+      cacheService.PartitionCacheResponse> METHOD_PROBABILISTIC_ADAPTIVE_SEARCH =
       io.grpc.MethodDescriptor.create(
           io.grpc.MethodDescriptor.MethodType.UNARY,
           generateFullMethodName(
-              "cacheService.CacheService", "probabilisticAdactiveSearch"),
+              "cacheService.CacheService", "probabilisticAdaptiveSearch"),
           io.grpc.protobuf.ProtoUtils.marshaller(cacheService.DataCacheRequest.getDefaultInstance()),
           io.grpc.protobuf.ProtoUtils.marshaller(cacheService.PartitionCacheResponse.getDefaultInstance()));
 
@@ -75,20 +75,20 @@ public class CacheServiceGrpc {
      * Probabilistic adaptive search
      * </pre>
      */
-    public void probabilisticAdactiveSearch(cacheService.DataCacheRequest request,
+    public void probabilisticAdaptiveSearch(cacheService.DataCacheRequest request,
         io.grpc.stub.StreamObserver<cacheService.PartitionCacheResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_PROBABILISTIC_ADACTIVE_SEARCH, responseObserver);
+      asyncUnimplementedUnaryCall(METHOD_PROBABILISTIC_ADAPTIVE_SEARCH, responseObserver);
     }
 
     @java.lang.Override public io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
-            METHOD_PROBABILISTIC_ADACTIVE_SEARCH,
+            METHOD_PROBABILISTIC_ADAPTIVE_SEARCH,
             asyncUnaryCall(
               new MethodHandlers<
                 cacheService.DataCacheRequest,
                 cacheService.PartitionCacheResponse>(
-                  this, METHODID_PROBABILISTIC_ADACTIVE_SEARCH)))
+                  this, METHODID_PROBABILISTIC_ADAPTIVE_SEARCH)))
           .build();
     }
   }
@@ -119,10 +119,10 @@ public class CacheServiceGrpc {
      * Probabilistic adaptive search
      * </pre>
      */
-    public void probabilisticAdactiveSearch(cacheService.DataCacheRequest request,
+    public void probabilisticAdaptiveSearch(cacheService.DataCacheRequest request,
         io.grpc.stub.StreamObserver<cacheService.PartitionCacheResponse> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_PROBABILISTIC_ADACTIVE_SEARCH, getCallOptions()), request, responseObserver);
+          getChannel().newCall(METHOD_PROBABILISTIC_ADAPTIVE_SEARCH, getCallOptions()), request, responseObserver);
     }
   }
 
@@ -152,9 +152,9 @@ public class CacheServiceGrpc {
      * Probabilistic adaptive search
      * </pre>
      */
-    public cacheService.PartitionCacheResponse probabilisticAdactiveSearch(cacheService.DataCacheRequest request) {
+    public cacheService.PartitionCacheResponse probabilisticAdaptiveSearch(cacheService.DataCacheRequest request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_PROBABILISTIC_ADACTIVE_SEARCH, getCallOptions(), request);
+          getChannel(), METHOD_PROBABILISTIC_ADAPTIVE_SEARCH, getCallOptions(), request);
     }
   }
 
@@ -184,14 +184,14 @@ public class CacheServiceGrpc {
      * Probabilistic adaptive search
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<cacheService.PartitionCacheResponse> probabilisticAdactiveSearch(
+    public com.google.common.util.concurrent.ListenableFuture<cacheService.PartitionCacheResponse> probabilisticAdaptiveSearch(
         cacheService.DataCacheRequest request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_PROBABILISTIC_ADACTIVE_SEARCH, getCallOptions()), request);
+          getChannel().newCall(METHOD_PROBABILISTIC_ADAPTIVE_SEARCH, getCallOptions()), request);
     }
   }
 
-  private static final int METHODID_PROBABILISTIC_ADACTIVE_SEARCH = 0;
+  private static final int METHODID_PROBABILISTIC_ADAPTIVE_SEARCH = 0;
 
   private static class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -210,8 +210,8 @@ public class CacheServiceGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
-        case METHODID_PROBABILISTIC_ADACTIVE_SEARCH:
-          serviceImpl.probabilisticAdactiveSearch((cacheService.DataCacheRequest) request,
+        case METHODID_PROBABILISTIC_ADAPTIVE_SEARCH:
+          serviceImpl.probabilisticAdaptiveSearch((cacheService.DataCacheRequest) request,
               (io.grpc.stub.StreamObserver<cacheService.PartitionCacheResponse>) responseObserver);
           break;
         default:
@@ -232,7 +232,7 @@ public class CacheServiceGrpc {
 
   public static io.grpc.ServiceDescriptor getServiceDescriptor() {
     return new io.grpc.ServiceDescriptor(SERVICE_NAME,
-        METHOD_PROBABILISTIC_ADACTIVE_SEARCH);
+        METHOD_PROBABILISTIC_ADAPTIVE_SEARCH);
   }
 
 }

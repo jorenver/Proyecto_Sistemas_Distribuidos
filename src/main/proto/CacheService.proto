@@ -9,7 +9,7 @@ option java_outer_classname = "CacheServiceProto";
 // The greeting service definition.
 service CacheService {
   // Probabilistic adaptive search
-  rpc probabilisticAdactiveSearch (DataCacheRequest) returns (PartitionCacheResponse) {}
+  rpc probabilisticAdaptiveSearch (DataCacheRequest) returns (PartitionCacheResponse) {}
 }
 message UtilityFunctionPoint{
   float m=1;
@@ -26,6 +26,9 @@ message DataCacheRequest {
   repeated float W=2;
   repeated float m_min=3;
   repeated UtilityFunction U=4;
+  repeated int32 f=5;
+  float cdi=6;
+  float bdi=7;
 }
 
 // The response message containing 
