@@ -89,9 +89,15 @@ public class AlgoritmoImp{
 	*/
 	private double[]  Denormalize(double[] x , double[] ms_ , double M){
 		int tam = x.length;
+		double total=0.0;
+		double sobrante;
+		for (int i=0;i<ms_.length ;i++ ) {
+			total+=ms_[i];
+		}
+		sobrante=M-total;
 		double [] ms = new double[tam];
 		for (int i =0; i< tam; i++){
-			ms[i] = x[i]*M + ms_[i];
+			ms[i] = x[i]*sobrante + ms_[i];
 		}
 		return ms;
 	}
@@ -190,7 +196,7 @@ public class AlgoritmoImp{
 				}
 			}
 		}
-		System.out.println(Arrays.toString(covariances));
+		//System.out.println(Arrays.toString(covariances));
 		MultivariateNormalDistribution gaussianaMult = new MultivariateNormalDistribution(xs, covariances);
 		double[] alphas = gaussianaMult.sample();
 		for (int i=0;i<tam ;i++ ) {
@@ -249,21 +255,21 @@ public class AlgoritmoImp{
 			count++;
 		}
 		int max=getMaxSolution(solutions);
-		return solutions[max].getXs();
+		return Denormalize(solutions[max].getXs(),m_,M);
 
 	}
 
 	public static void main(String[] args) {
 		double []weights = {1.0,1.0};
 		double M = 30.0;
-		double [] m_ = {10.0, 5.0, 6.0};
+		double [] m_ = {10.0, 5.0};
 		ArrayList<UtilityFunction> functions = new ArrayList<UtilityFunction>();
 		UtilityFunction f1 = new UtilityFunction();
 		f1.addPoint(0,0.0);
-		f1.addPoint(10,0.5);
-		f1.addPoint(20,0.7);
-		f1.addPoint(30,0.98);
-		f1.addPoint(40,0.99);
+		f1.addPoint(10,0.25);
+		f1.addPoint(20,0.35);
+		f1.addPoint(30,0.49);
+		f1.addPoint(40,0.60);
 		functions.add(f1);
 		UtilityFunction f2 = new UtilityFunction();
 		f2.addPoint(0,0.0);
@@ -273,7 +279,7 @@ public class AlgoritmoImp{
 		f2.addPoint(40,0.99);
 		functions.add(f2);
 		AlgoritmoImp al = new AlgoritmoImp();
-		double[] result=al.probabilisticAdactiveSearch(3,5,functions,weights,4, M, m_);
+		double[] result=al.probabilisticAdactiveSearch(10,5,functions,weights,500, M, m_);
 		for (int i=0;i< result.length; i++ ) {
 			System.out.println(result[i]);
 		}
