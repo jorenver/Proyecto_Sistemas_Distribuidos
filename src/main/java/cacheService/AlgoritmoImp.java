@@ -197,6 +197,10 @@ public class AlgoritmoImp{
 		
 		//numero de caches
 		int n = functions.size();
+		System.out.println("M: "+M);
+		System.out.println("cd: "+cd);
+		System.out.println("db: "+bd);
+		System.out.println("n: "+n);
 		//minimos de memoria
 		double[] m_= new double[n];
 		//pesos
@@ -212,11 +216,13 @@ public class AlgoritmoImp{
 		double restM = calculateRestMemory(m_,M);
 		//validacion
 		if(restM<0){
+			System.out.println("problema m_");
 			return null;
 		}
 		//se crean las curvas de hit rate
 		List<UnivariateFunction> hitRateCurves = createHitRateCurves(functions);
 		if(hitRateCurves==null){
+			System.out.println("curvas invalidas");
 			return null;
 		}
 

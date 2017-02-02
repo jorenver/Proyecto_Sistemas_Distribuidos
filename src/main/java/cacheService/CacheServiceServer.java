@@ -60,7 +60,7 @@ public class CacheServiceServer {
         @Override
         public void probabilisticAdaptiveSearch(DataCacheRequest request, StreamObserver<PartitionCacheResponse> responseObserver) {
             AlgoritmoImp algoritmoImp = new AlgoritmoImp();
-            double [] result=algoritmoImp.probabilisticAdactiveSearch(request,10,20,500); // k,j,limit
+            double [] result=algoritmoImp.probabilisticAdactiveSearch(request,10,20,2000); // k,j,limit
 
             PartitionCacheResponse.Builder builder=PartitionCacheResponse.newBuilder();
 
