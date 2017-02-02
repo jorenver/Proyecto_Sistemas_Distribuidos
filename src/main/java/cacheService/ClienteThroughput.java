@@ -38,7 +38,12 @@ public class ClienteThroughput{
         logger.info("Trying probabilisticAdaptiveSearch");
         try {
             PartitionCacheResponse response = blockingStub.probabilisticAdaptiveSearch(request);
-            return response.getMList();
+            Boolean status = response.getStatus();
+            if(status)
+                return response.getMList();
+            else
+                return null;
+
         } catch (RuntimeException e) {
             logger.log(Level.WARNING, "Request to grpc server failed", e);
             return null;
