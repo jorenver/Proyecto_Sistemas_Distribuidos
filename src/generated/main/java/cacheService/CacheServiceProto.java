@@ -50,12 +50,12 @@ public final class CacheServiceProto {
       "aCacheRequest\022\t\n\001M\030\001 \001(\002\022\t\n\001W\030\002 \003(\002\022\r\n\005m" +
       "_min\030\003 \003(\002\022(\n\001U\030\004 \003(\0132\035.cacheService.Uti" +
       "lityFunction\022\t\n\001f\030\005 \003(\005\022\013\n\003cdi\030\006 \001(\002\022\013\n\003" +
-      "bdi\030\007 \001(\002\"#\n\026PartitionCacheResponse\022\t\n\001m" +
-      "\030\001 \003(\0022u\n\014CacheService\022e\n\033probabilisticA" +
-      "daptiveSearch\022\036.cacheService.DataCacheRe",
-      "quest\032$.cacheService.PartitionCacheRespo" +
-      "nse\"\000B#\n\014cacheServiceB\021CacheServiceProto" +
-      "P\001b\006proto3"
+      "bdi\030\007 \001(\002\"3\n\026PartitionCacheResponse\022\016\n\006s" +
+      "tatus\030\001 \001(\010\022\t\n\001m\030\002 \003(\0022u\n\014CacheService\022e" +
+      "\n\033probabilisticAdaptiveSearch\022\036.cacheSer",
+      "vice.DataCacheRequest\032$.cacheService.Par" +
+      "titionCacheResponse\"\000B#\n\014cacheServiceB\021C" +
+      "acheServiceProtoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -92,7 +92,7 @@ public final class CacheServiceProto {
     internal_static_cacheService_PartitionCacheResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_cacheService_PartitionCacheResponse_descriptor,
-        new java.lang.String[] { "M", });
+        new java.lang.String[] { "Status", "M", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

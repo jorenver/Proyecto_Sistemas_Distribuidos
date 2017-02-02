@@ -61,11 +61,26 @@ public class CacheServiceServer {
         public void probabilisticAdaptiveSearch(DataCacheRequest request, StreamObserver<PartitionCacheResponse> responseObserver) {
             AlgoritmoImp algoritmoImp = new AlgoritmoImp();
             double [] result=algoritmoImp.probabilisticAdactiveSearch(request,10,20,500); // k,j,limit
+
             PartitionCacheResponse.Builder builder=PartitionCacheResponse.newBuilder();
+
+            if(result==null){
+                //AGREGAR STATUS FALSE
+
+                PartitionCacheResponse response = builder.build();
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
+
+                return;
+            }
+
+
+            
             for (int i=0;i<result.length;i++) {
                builder=builder.addM((float)result[i]);
                System.out.println("m["+i+"]="+result[i]);
             }
+            //AGREGAR STATUS TRUE
             PartitionCacheResponse response = builder.build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();

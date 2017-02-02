@@ -33,5 +33,6 @@ message DataCacheRequest {
 
 // The response message containing 
 message PartitionCacheResponse {
-   repeated float m=1;
+   bool status = 1;
+   repeated float m=2;
 }

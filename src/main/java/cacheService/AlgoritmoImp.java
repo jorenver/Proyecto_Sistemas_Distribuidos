@@ -18,24 +18,47 @@ import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 public class AlgoritmoImp{
 
 
-
-
 	/*
 	Calcula los m dado los x, efectua: mi = xi*M + mi_
 	*/
 	private double[]  Denormalize(double[] x , double[] ms_ , double M){
 		int tam = x.length;
+		double [] ms = new double[tam];
+
+		for (int i =0; i< tam; i++){
+			ms[i] = x[i]*M + ms_[i];
+		}
+		return ms;
+	}
+
+	//retorna el resto de memoria (M menos suma de minimos)
+	private double calculateRestMemory(double[] ms_, double M){
 		double total=0.0;
 		double sobrante;
 		for (int i=0;i<ms_.length ;i++ ) {
 			total+=ms_[i];
 		}
-		sobrante=M-total;
-		double [] ms = new double[tam];
-		for (int i =0; i< tam; i++){
-			ms[i] = x[i]*sobrante + ms_[i];
+		if(total > M){
+			return -1.0;
 		}
-		return ms;
+		sobrante=M-total;
+		return sobrante;
+	}
+
+	private double limit(UnivariateFunction h, double value){
+		PolynomialSplineFunction h1 = (PolynomialSplineFunction)h;
+		double[] knots = h1.getKnots();
+		double min = knots[0];
+		double max = knots[knots.length -1];
+
+		if(value< min){
+			return min;
+		}
+		if(value>max){
+			return max;
+		}
+
+		return value;
 	}
 
 	/*
@@ -45,20 +68,19 @@ public class AlgoritmoImp{
 	Ui es la funcion de utilidad = -fi*EAT(mi)
 	EAT(mi) = hi(mi)*cdi + (1-h(mi))*bdi
 	*/
-	private double calculateFunction(List<UnivariateFunction> functions, double [] ms, double []weights){
+	private double calculateFunction(List<UnivariateFunction> functions, double [] ms, double []weights, int[] f ,
+	float cd , float bd){
 		double result=0;
-		
+
+
 		int numFunctions = functions.size();
 		for (int i=0; i< numFunctions; i++){
-			double cd, bd, f;
-			cd = 1.2;
-			bd = 3.4;
-			f = 30;
 			UnivariateFunction h = functions.get(i);
-			//System.out.println("******* "+ms[i]);
-			double h_i = h.value(ms[i]);
+			//se validan los valores de x
+			double ms_i = limit(h, ms[i]);
+			double h_i = h.value(ms_i);
 			double EAT = h_i*cd + (1.0- h_i)*bd;
-			double Ui = -1*f*EAT;
+			double Ui = -1*f[i]*EAT;
 			result += weights[i]*Ui; // Wi*Ui(mi)
 		}
 
@@ -103,8 +125,20 @@ public class AlgoritmoImp{
 				UtilityFunctionPoint point = f.getPoint(i);
 				x[i] = point.getM();
 				y[i] = point.getHit();
+				//hit rates debe estar entre cero y uno
+				if( !(y[i]>=0  && y[i]<=1) ){
+					return null;
+				}
+
 			}
-			hitRateCurves.add(interpolator.interpolate(x,y));
+			
+
+			//interpola la curva y lo agrega al arrayList
+			try{
+				hitRateCurves.add(interpolator.interpolate(x,y));
+			}catch(Exception e){
+				return null;
+			}
 		}
 		return hitRateCurves; 
 	}
@@ -143,32 +177,59 @@ public class AlgoritmoImp{
 	}
 
 
+	//validar suma de minimos
+	//validar contenido y <=1
+	//controlar exception de valores de x
+
 
 	public double [] probabilisticAdactiveSearch(DataCacheRequest request,int k,int j ,int limit){
-		//int k, int j, List<UtilityFunction> functions, double[] weights, int limit, double M, double[] m_){
-		List<UtilityFunction> functions=request.getUList(); 
-		double M=request.getM();
-		List<Float> m_list=request.getMMinList() ;
-		List<Float> weights_list=request.getWList();
-		Solution[] solutions; 
-		double[] alpha; 
-		int n;
-		DirichletGen dirichlet;
-		List<UnivariateFunction> hitRateCurves = createHitRateCurves(functions);
-		n=functions.size();
+		
+		//SE OBTIENEN LOS DATOS DEL OBJETO REQUEST
+		List<UtilityFunction> functions=request.getUList(); //se obtiene los puntos de los hit rates 
+		double M=request.getM(); //cantidad de memoria M
+		List<Float> m_list=request.getMMinList(); //se obtienen las particiones de memoria minima
+		List<Float> weights_list=request.getWList();//se obtienen los pesos
+		List<Integer> frecuencies_list =  request.getFList();//se obtienen las frecuencias
+		float cd = request.getCdi();//se obtiene el cdi
+		float bd = request.getBdi(); //se obtiene el bdi
+
+		
+		
+		//numero de caches
+		int n = functions.size();
+		//minimos de memoria
 		double[] m_= new double[n];
+		//pesos
 		double[] weights= new double[n];
+		int[] frecuencias = new int[n];
+		//inicializo los pesos, los minimos y las frecuencias
 		for (int i=0;i<m_list.size() ;i++) {
 			m_[i]=m_list.get(i);
 			weights[i]=weights_list.get(i);
+			frecuencias[i] = frecuencies_list.get(i);
 		}
-		solutions= new Solution[k];
-		alpha= new double[n];
-		//inicializo el alpha
+		//se calcula el resto de memoria, es lo que se va a repartir
+		double restM = calculateRestMemory(m_,M);
+		//validacion
+		if(restM<0){
+			return null;
+		}
+		//se crean las curvas de hit rate
+		List<UnivariateFunction> hitRateCurves = createHitRateCurves(functions);
+		if(hitRateCurves==null){
+			return null;
+		}
+
+
+
+		//Arreglo de soluciones
+		Solution[] solutions= new Solution[k];
+		double[] alpha= new double[n];
+		//inicializo los alpha con 1/n
 		for (int i=0;i<alpha.length ;i++) {
 			alpha[i]=1.0/n;
 		}
-		dirichlet = new DirichletGen(new MRG32k3aL(),alpha);
+		DirichletGen dirichlet = new DirichletGen(new MRG32k3aL(),alpha);
 		//Genero la primeras K soluciones
 		
 
@@ -176,7 +237,7 @@ public class AlgoritmoImp{
 			double []xs = new double[n];
 			dirichlet.nextPoint(xs);
 			double []ms = Denormalize(xs, m_ , M);
-			double result = calculateFunction(hitRateCurves,ms,weights);
+			double result = calculateFunction(hitRateCurves,ms,weights,frecuencias, cd, bd);
 			solutions[i] = new Solution(xs, result);
 		}
 		int count=0;
@@ -190,7 +251,7 @@ public class AlgoritmoImp{
 				double [] xs = new double[n];
 				dirichlet.nextPoint(xs);
 				double []ms = Denormalize(xs, m_ , M);
-				double result =calculateFunction(hitRateCurves,ms,weights); //calculamos el valor de la funcion con la solucion generada
+				double result =calculateFunction(hitRateCurves,ms,weights,frecuencias, cd, bd); //calculamos el valor de la funcion con la solucion generada
 				
 				int index=getIndexMinSolution(solutions); // encontramos menos buena
 				 //si la solucion generada es mejor que la peor guardada la remplazamos
@@ -204,33 +265,5 @@ public class AlgoritmoImp{
 		return Denormalize(solutions[max].getXs(),m_,M);
 
 	}
-	/*
-	public static void main(String[] args) {
-		double []weights = {1.0,1.0};
-		double M = 30.0;
-		double [] m_ = {10.0, 5.0};
-		List<UtilityFunction> functions = new List<UtilityFunction>();
-		UtilityFunction f1 = new UtilityFunction();
-		f1.addPoint(0,0.0);
-		f1.addPoint(10,0.25);
-		f1.addPoint(20,0.35);
-		f1.addPoint(30,0.49);
-		f1.addPoint(40,0.60);
-		functions.add(f1);
-		UtilityFunction f2 = new UtilityFunction();
-		f2.addPoint(0,0.0);
-		f2.addPoint(10,0.5);
-		f2.addPoint(20,0.7);
-		f2.addPoint(30,0.97);
-		f2.addPoint(40,0.99);
-		functions.add(f2);
-
-		AlgoritmoImp al = new AlgoritmoImp();
-		double[] result=al.probabilisticAdactiveSearch(10,5,functions,weights,500, M, m_);
-		for (int i=0;i< result.length; i++ ) {
-			System.out.println(result[i]);
-		}
-	}
-	*/
 
 }

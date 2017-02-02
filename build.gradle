@@ -76,6 +76,16 @@ task runAlgoritmo(type: JavaExec) {
     main = 'cacheAlgorithm.AlgoritmoImp'
 }
 
+task runThroughputTest(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'cacheServices.ThroughputTest'
+}
+
+task runLatencyTest(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'cacheServices.LatencyTest'
+}
+
 startScripts.enabled = false
 
 task CacheServiceServer(type: CreateStartScripts) {
@@ -99,9 +109,27 @@ task CacheServiceAlgoritmo(type: CreateStartScripts) {
     classpath = jar.outputs.files + project.configurations.runtime
 }
 
+
+task runThroughputTestServices(type: CreateStartScripts) {
+    mainClassName = "cacheService.ThroughputTest"
+    applicationName = "throughput-test"
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = jar.outputs.files + project.configurations.runtime
+}
+
+task runLatencyTestServices(type: CreateStartScripts) {
+    mainClassName = "cacheService.LatencyTest"
+    applicationName = "latency-test"
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = jar.outputs.files + project.configurations.runtime
+}
+
+
 applicationDistribution.into("bin") {
     from(CacheServiceServer)
     from(CacheServiceClient)
     from(CacheServiceAlgoritmo)
+    from(runThroughputTestServices)
+    from(runLatencyTestServices)
     fileMode = 0755
 }

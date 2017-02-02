@@ -19,6 +19,7 @@ public  final class PartitionCacheResponse extends
     super(builder);
   }
   private PartitionCacheResponse() {
+    status_ = false;
     m_ = java.util.Collections.emptyList();
   }
 
@@ -47,20 +48,25 @@ public  final class PartitionCacheResponse extends
             }
             break;
           }
-          case 13: {
-            if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          case 8: {
+
+            status_ = input.readBool();
+            break;
+          }
+          case 21: {
+            if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               m_ = new java.util.ArrayList<java.lang.Float>();
-              mutable_bitField0_ |= 0x00000001;
+              mutable_bitField0_ |= 0x00000002;
             }
             m_.add(input.readFloat());
             break;
           }
-          case 10: {
+          case 18: {
             int length = input.readRawVarint32();
             int limit = input.pushLimit(length);
-            if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
+            if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
               m_ = new java.util.ArrayList<java.lang.Float>();
-              mutable_bitField0_ |= 0x00000001;
+              mutable_bitField0_ |= 0x00000002;
             }
             while (input.getBytesUntilLimit() > 0) {
               m_.add(input.readFloat());
@@ -76,7 +82,7 @@ public  final class PartitionCacheResponse extends
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
-      if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
         m_ = java.util.Collections.unmodifiableList(m_);
       }
       makeExtensionsImmutable();
@@ -94,23 +100,33 @@ public  final class PartitionCacheResponse extends
             cacheService.PartitionCacheResponse.class, cacheService.PartitionCacheResponse.Builder.class);
   }
 
-  public static final int M_FIELD_NUMBER = 1;
+  private int bitField0_;
+  public static final int STATUS_FIELD_NUMBER = 1;
+  private boolean status_;
+  /**
+   * <code>optional bool status = 1;</code>
+   */
+  public boolean getStatus() {
+    return status_;
+  }
+
+  public static final int M_FIELD_NUMBER = 2;
   private java.util.List<java.lang.Float> m_;
   /**
-   * <code>repeated float m = 1;</code>
+   * <code>repeated float m = 2;</code>
    */
   public java.util.List<java.lang.Float>
       getMList() {
     return m_;
   }
   /**
-   * <code>repeated float m = 1;</code>
+   * <code>repeated float m = 2;</code>
    */
   public int getMCount() {
     return m_.size();
   }
   /**
-   * <code>repeated float m = 1;</code>
+   * <code>repeated float m = 2;</code>
    */
   public float getM(int index) {
     return m_.get(index);
@@ -130,8 +146,11 @@ public  final class PartitionCacheResponse extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     getSerializedSize();
+    if (status_ != false) {
+      output.writeBool(1, status_);
+    }
     if (getMList().size() > 0) {
-      output.writeUInt32NoTag(10);
+      output.writeUInt32NoTag(18);
       output.writeUInt32NoTag(mMemoizedSerializedSize);
     }
     for (int i = 0; i < m_.size(); i++) {
@@ -144,6 +163,10 @@ public  final class PartitionCacheResponse extends
     if (size != -1) return size;
 
     size = 0;
+    if (status_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(1, status_);
+    }
     {
       int dataSize = 0;
       dataSize = 4 * getMList().size();
@@ -171,6 +194,8 @@ public  final class PartitionCacheResponse extends
     cacheService.PartitionCacheResponse other = (cacheService.PartitionCacheResponse) obj;
 
     boolean result = true;
+    result = result && (getStatus()
+        == other.getStatus());
     result = result && getMList()
         .equals(other.getMList());
     return result;
@@ -183,6 +208,9 @@ public  final class PartitionCacheResponse extends
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptorForType().hashCode();
+    hash = (37 * hash) + STATUS_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getStatus());
     if (getMCount() > 0) {
       hash = (37 * hash) + M_FIELD_NUMBER;
       hash = (53 * hash) + getMList().hashCode();
@@ -309,8 +337,10 @@ public  final class PartitionCacheResponse extends
     }
     public Builder clear() {
       super.clear();
+      status_ = false;
+
       m_ = java.util.Collections.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
 
@@ -334,11 +364,14 @@ public  final class PartitionCacheResponse extends
     public cacheService.PartitionCacheResponse buildPartial() {
       cacheService.PartitionCacheResponse result = new cacheService.PartitionCacheResponse(this);
       int from_bitField0_ = bitField0_;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      int to_bitField0_ = 0;
+      result.status_ = status_;
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         m_ = java.util.Collections.unmodifiableList(m_);
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
       }
       result.m_ = m_;
+      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -380,10 +413,13 @@ public  final class PartitionCacheResponse extends
 
     public Builder mergeFrom(cacheService.PartitionCacheResponse other) {
       if (other == cacheService.PartitionCacheResponse.getDefaultInstance()) return this;
+      if (other.getStatus() != false) {
+        setStatus(other.getStatus());
+      }
       if (!other.m_.isEmpty()) {
         if (m_.isEmpty()) {
           m_ = other.m_;
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           ensureMIsMutable();
           m_.addAll(other.m_);
@@ -417,34 +453,60 @@ public  final class PartitionCacheResponse extends
     }
     private int bitField0_;
 
+    private boolean status_ ;
+    /**
+     * <code>optional bool status = 1;</code>
+     */
+    public boolean getStatus() {
+      return status_;
+    }
+    /**
+     * <code>optional bool status = 1;</code>
+     */
+    public Builder setStatus(boolean value) {
+      
+      status_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool status = 1;</code>
+     */
+    public Builder clearStatus() {
+      
+      status_ = false;
+      onChanged();
+      return this;
+    }
+
     private java.util.List<java.lang.Float> m_ = java.util.Collections.emptyList();
     private void ensureMIsMutable() {
-      if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!((bitField0_ & 0x00000002) == 0x00000002)) {
         m_ = new java.util.ArrayList<java.lang.Float>(m_);
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
        }
     }
     /**
-     * <code>repeated float m = 1;</code>
+     * <code>repeated float m = 2;</code>
      */
     public java.util.List<java.lang.Float>
         getMList() {
       return java.util.Collections.unmodifiableList(m_);
     }
     /**
-     * <code>repeated float m = 1;</code>
+     * <code>repeated float m = 2;</code>
      */
     public int getMCount() {
       return m_.size();
     }
     /**
-     * <code>repeated float m = 1;</code>
+     * <code>repeated float m = 2;</code>
      */
     public float getM(int index) {
       return m_.get(index);
     }
     /**
-     * <code>repeated float m = 1;</code>
+     * <code>repeated float m = 2;</code>
      */
     public Builder setM(
         int index, float value) {
@@ -454,7 +516,7 @@ public  final class PartitionCacheResponse extends
       return this;
     }
     /**
-     * <code>repeated float m = 1;</code>
+     * <code>repeated float m = 2;</code>
      */
     public Builder addM(float value) {
       ensureMIsMutable();
@@ -463,7 +525,7 @@ public  final class PartitionCacheResponse extends
       return this;
     }
     /**
-     * <code>repeated float m = 1;</code>
+     * <code>repeated float m = 2;</code>
      */
     public Builder addAllM(
         java.lang.Iterable<? extends java.lang.Float> values) {
@@ -474,11 +536,11 @@ public  final class PartitionCacheResponse extends
       return this;
     }
     /**
-     * <code>repeated float m = 1;</code>
+     * <code>repeated float m = 2;</code>
      */
     public Builder clearM() {
       m_ = java.util.Collections.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }

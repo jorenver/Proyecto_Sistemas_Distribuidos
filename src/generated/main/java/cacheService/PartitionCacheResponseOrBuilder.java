@@ -8,15 +8,20 @@ public interface PartitionCacheResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>repeated float m = 1;</code>
+   * <code>optional bool status = 1;</code>
+   */
+  boolean getStatus();
+
+  /**
+   * <code>repeated float m = 2;</code>
    */
   java.util.List<java.lang.Float> getMList();
   /**
-   * <code>repeated float m = 1;</code>
+   * <code>repeated float m = 2;</code>
    */
   int getMCount();
   /**
-   * <code>repeated float m = 1;</code>
+   * <code>repeated float m = 2;</code>
    */
   float getM(int index);
 }
