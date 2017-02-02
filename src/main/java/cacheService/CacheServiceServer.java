@@ -65,8 +65,7 @@ public class CacheServiceServer {
             PartitionCacheResponse.Builder builder=PartitionCacheResponse.newBuilder();
 
             if(result==null){
-                //AGREGAR STATUS FALSE
-
+                builder.setStatus(false);
                 PartitionCacheResponse response = builder.build();
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
@@ -74,13 +73,11 @@ public class CacheServiceServer {
                 return;
             }
 
-
-            
             for (int i=0;i<result.length;i++) {
                builder=builder.addM((float)result[i]);
                System.out.println("m["+i+"]="+result[i]);
             }
-            //AGREGAR STATUS TRUE
+            builder.setStatus(true);
             PartitionCacheResponse response = builder.build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();

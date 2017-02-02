@@ -31,7 +31,12 @@ public class CacheServiceClient {
         logger.info("Trying probabilisticAdaptiveSearch");
         try {
             PartitionCacheResponse response = blockingStub.probabilisticAdaptiveSearch(request);
-            return response.getMList();
+            Boolean status = response.getStatus();
+            if(status)
+                return response.getMList();
+            else
+                return null;
+
         } catch (RuntimeException e) {
             logger.log(Level.WARNING, "Request to grpc server failed", e);
             return null;
@@ -105,9 +110,14 @@ public class CacheServiceClient {
         ufBilder.addPoint(point);
         builder.addU(ufBilder.build());
 
+
         try {
 
             List<Float> mValues= client.probabilisticAdaptiveSearch(builder.build());
+            if(mValues==null){
+                System.out.println("Error");
+                return;
+            }
             System.out.println("Reponse to Server: ");
             Iterator<Float> iterator = mValues.iterator();
             int i=1;
