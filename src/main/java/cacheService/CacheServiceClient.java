@@ -60,7 +60,7 @@ public class CacheServiceClient {
         //agregamos los w
         builder.addW((float)1.0);
         builder.addW((float)1.0);
-        builder.addW((float)10.0);
+        builder.addW((float)1.0);
         //agragamos las U
         UtilityFunctionPoint  point;
         // f1
