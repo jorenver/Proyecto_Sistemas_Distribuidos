@@ -242,7 +242,7 @@ public class AlgoritmoImp{
 		for (int i=0;i<solutions.length ;i++) {
 			double []xs = new double[n];
 			dirichlet.nextPoint(xs);
-			double []ms = Denormalize(xs, m_ , M);
+			double []ms = Denormalize(xs, m_ , restM);
 			double result = calculateFunction(hitRateCurves,ms,weights,frecuencias, cd, bd);
 			solutions[i] = new Solution(xs, result);
 		}
@@ -256,7 +256,7 @@ public class AlgoritmoImp{
 				// genero una solucion x con el alpha
 				double [] xs = new double[n];
 				dirichlet.nextPoint(xs);
-				double []ms = Denormalize(xs, m_ , M);
+				double []ms = Denormalize(xs, m_ , restM);
 				double result =calculateFunction(hitRateCurves,ms,weights,frecuencias, cd, bd); //calculamos el valor de la funcion con la solucion generada
 				
 				int index=getIndexMinSolution(solutions); // encontramos menos buena
@@ -268,7 +268,7 @@ public class AlgoritmoImp{
 			count++;
 		}
 		int max=getIndexMaxSolution(solutions);
-		return Denormalize(solutions[max].getXs(),m_,M);
+		return Denormalize(solutions[max].getXs(),m_,restM);
 
 	}
 
